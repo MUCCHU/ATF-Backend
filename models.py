@@ -2,9 +2,18 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+# import jwt
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 db = SQLAlchemy()
-class Users(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+class Users(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(200), nullable=False)
     phone = db.Column(db.String(10), nullable=False)
