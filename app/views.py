@@ -4,8 +4,8 @@ from flask import jsonify
 # from app import app
 from unicodedata import name
 from flask import request
-from models import Users
-from models import db
+from .models import Users
+from .models import db
 from flask_login import (
     LoginManager,
     UserMixin,

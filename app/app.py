@@ -1,11 +1,11 @@
 # from turtle import home
 from flask import Flask
 # from flask_sqlalchemy import SQLAlchemy
-from models import db
-from models import Users
+from .models import db
+from .models import Users
 from flask_cors import CORS
-import views
-from views import login_manager
+from .views import *
+from .views import login_manager
 from datetime import datetime
 from flask_login import (
     LoginManager,
@@ -36,10 +36,10 @@ cors = CORS(
     supports_credentials=True,
 )
 # Routes
-app.add_url_rule('/', view_func=views.homepage)
-app.add_url_rule('/signup', methods=['POST'], view_func=views.signup)
-app.add_url_rule('/signin', methods=['POST'], view_func=views.login)
-app.add_url_rule('/check', methods=['POST'], view_func=views.check_session)
-app.add_url_rule('/logout', methods=['POST'], view_func=views.logout)
-app.add_url_rule('/queryusers', methods=['GET', 'POST'], view_func=views.queryusers)
+app.add_url_rule('/', view_func=homepage)
+app.add_url_rule('/signup', methods=['POST'], view_func=signup)
+app.add_url_rule('/signin', methods=['POST'], view_func=login)
+app.add_url_rule('/check', methods=['POST'], view_func=check_session)
+app.add_url_rule('/logout', methods=['POST'], view_func=logout)
+app.add_url_rule('/queryusers', methods=['GET', 'POST'], view_func=queryusers)
 
