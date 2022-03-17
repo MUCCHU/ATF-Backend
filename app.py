@@ -1,8 +1,9 @@
-from turtle import home
+# from turtle import home
 from flask import Flask
 # from flask_sqlalchemy import SQLAlchemy
 from models import db
 from models import Users
+from flask_cors import CORS
 import views
 from views import login_manager
 from datetime import datetime
@@ -26,9 +27,14 @@ app.config.update(
     # SECRET_KEY="secret_sauce",
     SESSION_COOKIE_HTTPONLY=True,
     REMEMBER_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE="Strict",
+    SESSION_COOKIE_SAMESITE="Lax",
 )
-
+cors = CORS(
+    app,
+    resources={r"*": {"origins": "http://localhost:8080"}},
+    expose_headers=["Content-Type", "X-CSRFToken"],
+    supports_credentials=True,
+)
 # Routes
 app.add_url_rule('/', view_func=views.homepage)
 app.add_url_rule('/signup', methods=['POST'], view_func=views.signup)

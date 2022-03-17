@@ -42,11 +42,17 @@ def signup():
         data = request.get_json()
         print("pincode - ",data.get('pincode'))
         # users = Users.query.all()
-        user = Users(name= data.get("name"), password= data.get("password"), phone=data.get("phone"), email=data.get("email"), address=data.get("address"), pincode=int(data.get('pincode')))
-        print(user)
         # try:
+        userd = Users.query.filter_by(email=data.get("email")).first()
+        if userd:
+            return jsonify({"message": "Email already exists"}), 400
+        user = Users(name= data.get("name"), password= data.get("password"), phone=data.get("phone"), email=data.get("email"), address=None, pincode=None)
         db.session.add(user)
+        print(user) 
         db.session.commit()
+        # except:
+        #     return {"message": "Failed to signup"}, 500
+        # try:
         # print("Users = ",users);
         return {"message": "User signed up successfully" }, 201
         # except:
@@ -56,7 +62,11 @@ def login():
     if request.method == 'POST':
         data = request.get_json()
         # print("data = ",data)
-        user = Users.query.filter_by(email=data.get("email")).first()
+        try: 
+            user = Users.query.filter_by(email=data.get("email")).first()
+        except:
+            print("Databse Error")
+            return {"message": "Failed to login"}, 500
         # users = Users.query.all()
         # for user in users:
         #     print("user email = ",user.email)
@@ -68,19 +78,22 @@ def login():
             # user_model = Users()
             # Users.id = user["id"]
             login_user(user)
-            return jsonify({"login": True})
+            return jsonify({"message": "Login Success", "user": {"email": user.email, "name": user.name, "phone": user.phone}}), 200
             return {"message": "User signed in successfully" }, 200
         return {"message": "Invalid Credentials"}, 404
 
 def check_session():
     if current_user.is_authenticated:
-        return jsonify({"login": True})
+        return jsonify({"message": "User is logged in", "user": {"email": current_user.email, "name": current_user.name, "phone": current_user.phone}}), 200
 
-    return jsonify({"login": False})
+    return jsonify({"message": "User is logged out"}), 404
 def logout():
     logout_user()
-    return jsonify({"logout": True})
+    return jsonify({"message": "Logged out successfully"})
 def queryusers():
-    users = Users.query.all()
+    try:
+        users = Users.query.all()
+    except:
+        return {"message": "Failed to get users"}, 500
     print("users = ",users)
     return str(users), 200
