@@ -21,6 +21,7 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     address = db.Column(db.String(200), nullable=True)
     pincode = db.Column(db.Integer, nullable=True)
+    is_restaurent = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login_at = db.Column(db.DateTime, default=datetime.utcnow)

@@ -1,7 +1,9 @@
 from email import message
 import email
-from flask import jsonify
+from flask import jsonify, make_response
 # from app import app
+from datetime import datetime, timedelta
+from flask import current_app as app
 from unicodedata import name
 from flask import request
 from .models import Users
@@ -18,8 +20,8 @@ import jwt
 
 #Imports done
 
-login_manager = LoginManager()
-login_manager.session_protection = "strong"
+# login_manager = LoginManager()
+# login_manager.session_protection = "strong"
 def homepage():
     return {'message': 'Hello, world!'}, 200
 
@@ -31,14 +33,14 @@ def get_user(id: int):
     return None
 
 
-@login_manager.user_loader
-def user_loader(id: int):
-    user = get_user(id)
-    if user:
-        # user_model = Users()
-        # user_model.id = user["id"]
-        return user
-    return None
+# @login_manager.user_loader
+# def user_loader(id: int):
+#     user = get_user(id)
+#     if user:
+#         # user_model = Users()
+#         # user_model.id = user["id"]
+#         return user
+#     return None
 
 def signup():
     if request.method == 'POST':
@@ -81,19 +83,41 @@ def login():
         if user.check_password(data.get("password")):
             # user_model = Users()
             # Users.id = user["id"]
-            login_user(user)
-            return jsonify({"message": "Login Success", "user": {"email": user.email, "name": user.name, "phone": user.phone}}), 200
-            return {"message": "User signed in successfully" }, 200
+            token = jwt.encode({
+            'id': user.id,
+            'exp' : datetime.utcnow() + timedelta(minutes = 30)
+        }, app.config['SECRET_KEY'])
+            # login_user(user)
+            res = make_response(jsonify({"message": "Logged in successfully"}), 200)
+            res.set_cookie("token", token.decode('UTF-8'), httponly=True, expires=datetime.utcnow() + timedelta(days= 1))
+            return res
+            # return jsonify({"message": "Login Success","user": {"email": user.email, "name": user.name, "phone": user.phone}}), 200
+            # return {"message": "User signed in successfully" }, 200
         return {"message": "Invalid Credentials"}, 404
 
 def check_session():
-    if current_user.is_authenticated:
-        return jsonify({"message": "User is logged in", "user": {"email": current_user.email, "name": current_user.name, "phone": current_user.phone}}), 200
+
+    token = request.cookies.get('token')
+    if token:
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+        except:
+            return {"message": "Failed to get users"}, 500
+        # print("data = ",data)
+        user = get_user(data['id'])
+        if user:
+            return {"message": "User is authenticated", "user": {"email": user.email, "name": user.name, "phone": user.phone}}, 200
+        return {"message": "User not authenticated"}, 404
+    # if current_user.is_authenticated:
+    #     return jsonify({"message": "User is logged in", "user": {"email": current_user.email, "name": current_user.name, "phone": current_user.phone}}), 200
 
     return jsonify({"message": "User is logged out"}), 404
 def logout():
-    logout_user()
-    return jsonify({"message": "Logged out successfully"})
+    resp = make_response(jsonify({"message": "User logged out"}), 200)
+    resp.set_cookie('token', '', expires=0)
+    return resp
+    # logout_user()
+    # return jsonify({"message": "Logged out successfully"})
 def queryusers():
     try:
         users = Users.query.all()
