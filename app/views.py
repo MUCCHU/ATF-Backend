@@ -14,6 +14,10 @@ from flask_login import (
     login_user,
     logout_user,
 )
+import jwt
+
+#Imports done
+
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
 def homepage():
