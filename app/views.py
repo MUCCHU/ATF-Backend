@@ -6,16 +6,16 @@ from datetime import datetime, timedelta
 from flask import current_app as app
 from unicodedata import name
 from flask import request
-from .models import Users
+from .models import Restaurants, Users
 from .models import db
-from flask_login import (
-    LoginManager,
-    UserMixin,
-    current_user,
-    login_required,
-    login_user,
-    logout_user,
-)
+# from flask_login import (
+#     LoginManager,
+#     UserMixin,
+#     current_user,
+#     login_required,
+#     login_user,
+#     logout_user,
+# )
 import jwt
 
 #Imports done
@@ -52,10 +52,19 @@ def signup():
         userd = Users.query.filter_by(email=data.get("email")).first()
         if userd:
             return jsonify({"message": "Email already exists"}), 400
-        user = Users(name= data.get("name"), password= data.get("password"), phone=data.get("phone"), email=data.get("email"), address=None, pincode=None)
-        db.session.add(user)
-        print(user) 
-        db.session.commit()
+        if data.get('is_restaurant'):
+            user = Users(name= data.get("name"), password= data.get("password"), phone=data.get("phone"), email=data.get("email"), address=None, pincode=None, is_restaurant= True)
+            restaurant = Restaurants(user=user, opening_time= data.get("opening_time"), closing_time= data.get("closing_time"))
+            db.session.add(user)
+            db.session.add(restaurant)
+            db.session.commit()
+            print(user) 
+            # db.session.commit()
+        else:
+            user = Users(name= data.get("name"), password= data.get("password"), phone=data.get("phone"), email=data.get("email"), address=None, pincode=None, is_restaurant= False)
+            db.session.add(user)
+            # db.session.add(restaurant)
+            db.session.commit()
         # except:
         #     return {"message": "Failed to signup"}, 500
         # try:
@@ -124,4 +133,19 @@ def queryusers():
     except:
         return {"message": "Failed to get users"}, 500
     print("users = ",users)
+    for user in users:
+        print("name = ",user.name)
+        print("password = ", user.password)
+        print("phone = ", user.phone)
+        print("email = ", user.email)
+        print("address =", user.address)
+        print("pincode = ", user.pincode)
+        print("is_restaurent = ", user.is_restaurant)
+        print("created_at = ", user.created_at)
+        print("updated_at = ", user.updated_at)
+        print("last_login_at = ", user.last_login_at)
+        if user.is_restaurant:
+            print('User.rest=', user.restaurant)
+            print("opening_time = ", user.restaurant.opening_time)
+            print("closing_time = ", user.restaurant.closing_time)
     return str(users), 200

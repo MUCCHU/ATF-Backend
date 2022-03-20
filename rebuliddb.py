@@ -1,5 +1,5 @@
 #!./env/bin/python
-from app import app
-from models import db
+from app.models import db
+from app.app import app
 with app.app_context():
     db.create_all()

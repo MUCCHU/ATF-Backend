@@ -5,22 +5,22 @@ from .models import db
 from .models import Users
 from flask_cors import CORS
 from .views import *
-from .views import login_manager
+# from .views import login_manager
 from datetime import datetime
-from flask_login import (
-    LoginManager,
-    UserMixin,
-    current_user,
-    login_required,
-    login_user,
-    logout_user,
-)
+# from flask_login import (
+#     LoginManager,
+#     UserMixin,
+#     current_user,
+#     login_required,
+#     login_user,
+#     logout_user,
+# )
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'The secret is that IIT Kgp is an IIT :)'
 
 db.init_app(app)
-login_manager.init_app(app)
+# login_manager.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Harsh1606@localhost/users'
 app.config.update(
     # DEBUG=True,
