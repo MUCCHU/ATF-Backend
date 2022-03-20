@@ -16,6 +16,7 @@ mysql-connector-python==8.0.28
 mysql-connector-python-rf==2.2.2
 protobuf==3.19.4
 pycparser==2.21
+PyJWT==1.7.1
 PyMySQL==1.0.2
 six==1.16.0
 SQLAlchemy==1.4.32
