@@ -1,11 +1,11 @@
 #!./env/bin/python
 import mysql.connector
 import os
-os.system("./delete_db.py")
+# os.system("./delete_db.py")
 mydb = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    passwd = "Harsh1606",
+    host = "sql6.freemysqlhosting.net",
+    user = "sql6480330",
+    passwd = "VxdvywzzhL",
 )
 
 

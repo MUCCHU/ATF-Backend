@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = 'The secret is that IIT Kgp is an IIT :)'
 
 db.init_app(app)
 # login_manager.init_app(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Harsh1606@localhost/users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql6480330:VxdvywzzhL@sql6.freemysqlhosting.net/sql6480330'
 app.config.update(
     # DEBUG=True,
     # SECRET_KEY="secret_sauce",
