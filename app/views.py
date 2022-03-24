@@ -98,7 +98,7 @@ def login():
         }, app.config['SECRET_KEY'])
             # login_user(user)
             res = make_response(jsonify({"message": "Logged in successfully"}), 200)
-            res.set_cookie("token", token.decode('UTF-8'), httponly=True, samesite='None', expires=datetime.utcnow() + timedelta(days= 1))
+            res.set_cookie("token", token.decode('UTF-8'), httponly=True, samesite='None', secure=True, expires=datetime.utcnow() + timedelta(days= 1))
             res.headers.add('Set-Cookie','cross-site-cookie=bar; SameSite=None; Secure')
             return res
             # return jsonify({"message": "Login Success","user": {"email": user.email, "name": user.name, "phone": user.phone}}), 200
