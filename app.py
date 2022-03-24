@@ -13,7 +13,7 @@ class Orders(db.Model):
     time = db.Column(db.Integer, nullable=False )
     
 
-@app.route('/details')
+@app.route('/')
 def ordertime():
     sample_name=['Alex smith','Raman mundol','Sunil patel','Dave kumar','Tom doe','James cook','John kk','himanshu sarkate','prabal sonakia','sonu kumar','pradipto mundol']
     name=random.choice(sample_name)
@@ -26,22 +26,9 @@ def ordertime():
     db.session.commit()
     print(Orders.query.all())
     id=Orders.query[-1].id
-
-    # print(name)
-    # print("Id Name"+id)
-    print("your order will be deviver in minute")
-    print(time)
     return {'name': name,'id': id,'time to reach':time_to_reach,'time of preparation':time_of_preparation,'time to deliver':time_to_deliver, 'total time': time, }
 
-@app.route("/check")
-def check():
-    orders = Orders.query.all()
-    for order in orders:
-        print("Order if {}".format(order.id))
-        print("Order name = ", order.name)
-        print("Order time {}".format(order.time))
 
-    return {"message" : "Orders placed successfully"}, 200
 
 
 
