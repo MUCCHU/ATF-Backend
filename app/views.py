@@ -109,6 +109,7 @@ def check_session():
 
     token = request.cookies.get('token')
     if token:
+        print(token)
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
         except:

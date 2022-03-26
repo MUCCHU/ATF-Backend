@@ -4,6 +4,8 @@ from enum import unique
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 # import jwt
 from flask_login import (
     LoginManager,
@@ -13,6 +15,13 @@ from flask_login import (
     login_user,
     logout_user,
 )
+
+
+engine = create_engine('mysql://opensoft:opensoft@opensoft-1.cwvqdtxsixl6.ap-south-1.rds.amazonaws.com/opensoft', convert_unicode=True, echo=False)
+Base = declarative_base()
+Base.metadata.reflect(engine)
+
+
 db = SQLAlchemy()
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
