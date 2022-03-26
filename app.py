@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
-from flask import Flask
+from flask import Flask, request
 from datetime import datetime
 
 engine = create_engine('mysql://root:hello@localhost/notifications', convert_unicode=True, echo=False)
@@ -19,37 +19,55 @@ db.Model.metadata.reflect(db.engine)
 class Notifs(db.Model):
     __table__ = db.Model.metadata.tables['notifications']
 
-@app.route('/add/<int:id1>/<int:creator1>/<type1>/<body1>/<banner1>')
-def add(id1,creator1,type1,body1,banner1):
+@app.route('/add', methods=['POST'])
+def add():
+    id = request.values.get("id")
+    creator = request.values.get("creator")
+    type=request.values.get("type")
+    body=   request.values.get("body")
+    banner=   request.values.get("banner")
     now = datetime.now()
-    usertobr=Notifs(id=id1,creator=creator1,type=type1,body=body1,banner=banner1,created_at=now,updated_at=now)
+    usertobr=Notifs(id=id,creator=creator,type=type,body=body,banner=banner,created_at=now,updated_at=now)
     db.session.add(usertobr)
     db.session.commit()
-    return {"message":"hello"}
+    return {"VALUES ADDED":"f"}
 
-@app.route('/show')
-def show():
+@app.route('/show', methods=['GET','POST'])
+def ind():
+    id = request.values.get('id')
+    print(str(Notifs.query.filter_by(id=id).first().id)+' '+str(Notifs.query.filter_by(id=id).first().creator)+' '+str(Notifs.query.filter_by(id=id).first().type)+' '+str(Notifs.query.filter_by(id=id).first().body)+' '+str(Notifs.query.filter_by(id=id).first().banner)+' '+str(Notifs.query.filter_by(id=id).first().created_at)+' '+str(Notifs.query.filter_by(id=id).first().updated_at)+' ')
+    return {"VALUES PRINTED":"f"}
+
+
+@app.route('/', methods=['GET'])
+def index():
     notifs=Notifs.query.all()
     for i in notifs:
-         print(str(i.id)+' '+str(i.creator)+' '+i.type+' '+i.body+' '+i.banner+' '+i.created_at+' '+i.updated_at)
-    print(notifs)
-    return {"message":"hello"}
+         print(str(i.id)+' '+str(i.creator)+' '+i.type+' '+i.body+' '+i.banner+' '+str(i.created_at)+' '+str(i.updated_at))
+    return {"VALUES PRINTED":"f"}
 
-@app.route('/delete/<int:e>')
-def dele(e):
-    Notifs.query.filter_by(id=e).delete()
+@app.route('/delete', methods=['DELETE'])
+def dele():
+    id = request.values.get('id')
+    Notifs.query.filter_by(id=id).delete()
     db.session.commit()
-    return {"message":"hello"}
+    return {"VALUES DELETED":"f"}
 
-@app.route('/update/<int:id1>/<int:creator1>/<type1>/<body1>/<banner1>')
-def delcreate(id1,creator1,type1,body1,banner1):
-    creatime=Notifs.query.filter_by(id=id1).first().created_at
-    Notifs.query.filter_by(id=id1).delete()
+@app.route('/update', methods=['PUT'])
+def delcreate():
+    id = request.values.get('id')
+    creator = request.values.get('creator')
+    type = request.values.get('type')
+    body = request.values.get('body')
+    banner = request.values.get('banner')
+    creatime=Notifs.query.filter_by(id=id).first().created_at
+    Notifs.query.filter_by(id=id).delete()
     db.session.commit()
     now = datetime.now()
-    usertobr=Notifs(id=id1,creator=creator1,type=type1,body=body1,banner=banner1,created_at=creatime,updated_at=now)
+    usertobr=Notifs(id=id,creator=creator,type=type,body=body,banner=banner,created_at=creatime,updated_at=now)
     db.session.add(usertobr)
     db.session.commit()
-    return {"message":"hello"}
+    return {"VALUES UPDATED":"f"}
+
 
 
