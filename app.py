@@ -30,13 +30,13 @@ def add():
     usertobr=Notifs(id=id,creator=creator,type=type,body=body,banner=banner,created_at=now,updated_at=now)
     db.session.add(usertobr)
     db.session.commit()
-    return {"VALUES ADDED":"f"}
+    return "VALUES ADDED"
 
 @app.route('/show', methods=['GET','POST'])
 def ind():
     id = request.values.get('id')
     print(str(Notifs.query.filter_by(id=id).first().id)+' '+str(Notifs.query.filter_by(id=id).first().creator)+' '+str(Notifs.query.filter_by(id=id).first().type)+' '+str(Notifs.query.filter_by(id=id).first().body)+' '+str(Notifs.query.filter_by(id=id).first().banner)+' '+str(Notifs.query.filter_by(id=id).first().created_at)+' '+str(Notifs.query.filter_by(id=id).first().updated_at)+' ')
-    return {"VALUES PRINTED":"f"}
+    return (str(Notifs.query.filter_by(id=id).first().id)+' '+str(Notifs.query.filter_by(id=id).first().creator)+' '+str(Notifs.query.filter_by(id=id).first().type)+' '+str(Notifs.query.filter_by(id=id).first().body)+' '+str(Notifs.query.filter_by(id=id).first().banner)+' '+str(Notifs.query.filter_by(id=id).first().created_at)+' '+str(Notifs.query.filter_by(id=id).first().updated_at)+' ')
 
 
 @app.route('/', methods=['GET'])
@@ -44,14 +44,14 @@ def index():
     notifs=Notifs.query.all()
     for i in notifs:
          print(str(i.id)+' '+str(i.creator)+' '+i.type+' '+i.body+' '+i.banner+' '+str(i.created_at)+' '+str(i.updated_at))
-    return {"VALUES PRINTED":"f"}
+    return "VALUES PRINTED"
 
 @app.route('/delete', methods=['DELETE'])
 def dele():
     id = request.values.get('id')
     Notifs.query.filter_by(id=id).delete()
     db.session.commit()
-    return {"VALUES DELETED":"f"}
+    return "VALUES DELETED"
 
 @app.route('/update', methods=['PUT'])
 def delcreate():
@@ -67,7 +67,7 @@ def delcreate():
     usertobr=Notifs(id=id,creator=creator,type=type,body=body,banner=banner,created_at=creatime,updated_at=now)
     db.session.add(usertobr)
     db.session.commit()
-    return {"VALUES UPDATED":"f"}
+    return "VALUES UPDATED"
 
 
 
