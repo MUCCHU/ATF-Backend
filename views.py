@@ -7,6 +7,8 @@ from connection import connection, cursor
 import random
 # from models import Users
 
+
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -18,13 +20,12 @@ def token_required(f):
             print(token)
         # return 401 if token is not passed
         if not token:
-            return jsonify({'message' : 'Token is missing !!'}), 401
+            return jsonify({'message' : 'Token is missing!'}), 401
   
         try:
             # decoding the payload to fetch the stored details
             print(app.config['SECRET_KEY'])
             data = jwt.decode(token, app.config['SECRET_KEY'])
-            print(data)
             cursor.execute("SELECT * FROM users WHERE user_id = %s;", (data["id"],))
             # Handle error if no such user exists
             feedbacks = []
@@ -45,6 +46,17 @@ def token_required(f):
 def homepage():
     return {"message": "Hello World!"}, 200
 
+
+# {
+#     "payment_mode":"cash",
+#     "restaurant_id": 123,
+#     "orders":
+#     [
+#         {"product_id": 123, "quantity":2},
+#         {"product_id": 234, "quantity":3}
+#     ]
+# }
+
 @token_required
 def createorder(user):
     user_id = user[0]
@@ -55,8 +67,17 @@ def createorder(user):
     time_to_deliver=random.randint(1,15)
     total_time=max(time_to_reach,time_for_preparation)+time_to_deliver
     cursor.execute(
-        "INSERT INTO orders (user_id, delivery_agent_name, time_for_preparation, time_to_reach, time_to_deliver, total_time, delivery_address, payment_mode, ordered_on) VALUES (?,?,?,?,?,?,?,?,?);",
-        (user_id, names.get_full_name(gender='male'), time_for_preparation, time_to_reach, time_to_deliver, total_time, delivery_address, data["payment_mode"], NOW()) )
+        "INSERT INTO orders (user_id, delivery_agent_name, time_for_preparation, time_to_reach, time_to_deliver, total_time, delivery_address, status, payment_mode, ordered_on) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,NOW());",
+        (user_id, names.get_full_name(gender='male'), time_for_preparation, time_to_reach, time_to_deliver, total_time, delivery_address, "placed", data["payment_mode"],) )
+    order_id = cursor.lastrowid
+    print("HELLLLLOOOOOO")
+    for order in data["orders"]:
+        pid = order["product_id"]
+        qty = order["quantity"]
+        cursor.execute(
+            "INSERT INTO order_items (order_id, restaurant_id, product_id, quantity, created_at, updated_at) VALUES (%s,%s,%s,%s,NOW(),NOW());",
+            (order_id, data["restaurant_id"], pid, qty)
+        )
     connection.commit()
     return {"message": "Order Created"}, 201
 
@@ -79,3 +100,38 @@ def deleteorder(id):
     cursor.execute("DELETE FROM orders WHERE order_id = ?", (id,))
     connection.commit()
     return {"message": "Order Deleted"}, 200
+
+
+
+# {
+#     "products":
+#     [
+#         {
+#             "product_id":
+#             "product_name":
+#             "image_path":
+#             "rate":
+#             "is_available":
+#         }
+#     ]
+# }
+
+def restaurant_menu(id):
+    cursor.execute(
+        "SELECT * FROM products WHERE restaurant_id = %s;",
+        (id,)
+    )
+    products = {"products": []}
+    for feedback in cursor:
+        prod = {}
+        prod["product_id"] = feedback[0]
+        prod["product_name"] = feedback[2]
+        prod["image_path"] = feedback[3]
+        prod["rate"] = feedback[4]
+        prod["is_available"] = feedback[5]
+        products["products"].append(prod)   
+
+    return products, 200
+
+    
+

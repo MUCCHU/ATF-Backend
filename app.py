@@ -1,5 +1,4 @@
 from flask import Flask
-from models import db
 from flask_cors import CORS
 from views import *
 from datetime import datetime
@@ -9,7 +8,6 @@ app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'The secret is that IIT Kgp is an IIT :)'
 
-db.init_app(app)
 # login_manager.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Harsh1606@localhost/orders'
 app.config.update(
@@ -31,6 +29,7 @@ app.add_url_rule('/order/create', methods=['POST'], view_func=createorder)
 app.add_url_rule('/order/get', methods=['GET'], view_func=getorder)
 app.add_url_rule('/order/update/<id>', methods=['PUT'], view_func=updateorder)
 app.add_url_rule('/order/delete/<id>', methods=['DELETE'], view_func=deleteorder)
+app.add_url_rule('/order/<id>', methods = ['GET'], view_func=restaurant_menu)
 # app.add_url_rule('/signin', methods=['POST'], view_func=login)
 # app.add_url_rule('/check', methods=['POST'], view_func=check_session)
 # app.add_url_rule('/logout', methods=['POST'], view_func=logout)
