@@ -1,20 +1,10 @@
-# from turtle import home
 from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
 from models import db
-# from .models import Users
 from flask_cors import CORS
 from views import *
-# from .views import login_manager
 from datetime import datetime
-# from flask_login import (
-#     LoginManager,
-#     UserMixin,
-#     current_user,
-#     login_required,
-#     login_user,
-#     logout_user,
-# )
+from connection import connection, cursor
+
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'The secret is that IIT Kgp is an IIT :)'
