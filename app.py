@@ -21,7 +21,7 @@ def handler():
 def index():
     # List all products
     if request.method == "GET":
-        cursor.execute("SELECT * FROM Products;")
+        cursor.execute("SELECT * FROM products;")
         products = []
         for product in cursor:
             products.append(product)
@@ -37,7 +37,7 @@ def index():
         is_available = request.form.get("is_available")
     
         cursor.execute(
-            "INSERT INTO Products (product_id, restaurant_id, product_name, image_path, rate, is_available, created_at, updated_at) VALUES (%s,%s,%s,%s,%s,%s,NOW(), NULL);",
+            "INSERT INTO products (product_id, restaurant_id, product_name, image_path, rate, is_available) VALUES (%s,%s,%s,%s,%s,%s);",
             (product_id, restaurant_id, product_name, image_path, rate, is_available,))
 
         connection.commit()
@@ -46,7 +46,7 @@ def index():
 
 @app.route('/products/<int:product_id>', methods=['GET', 'POST', 'DELETE'])
 def fetch(product_id):
-    cursor.execute("SELECT * FROM Products WHERE product_id=%s", (product_id,))
+    cursor.execute("SELECT * FROM products WHERE product_id=%s", (product_id,))
     product = cursor.fetchone()
 
     # Show a product
@@ -62,7 +62,7 @@ def fetch(product_id):
         is_available = request.form.get("is_available") if request.form.get("is_available") else product[6]
 
         cursor.execute(
-            "UPDATE Products SET restaurant_id=%s, product_name=%s, image_path=%s, rate=%s, is_available=%s, updated_at=NOW() WHERE product_id=%s",
+            "UPDATE products SET restaurant_id=%s, product_name=%s, image_path=%s, rate=%s, is_available=%s WHERE product_id=%s",
             (product_id, restaurant_id, product_name, image_path, rate, is_available,)
         )
 
@@ -74,7 +74,7 @@ def fetch(product_id):
     # Delete products
     elif request.method == "DELETE":
         cursor.execute(
-            "DELETE FROM Products WHERE product_id=%s",
+            "DELETE FROM products WHERE product_id=%s",
             (product_id,)
         )
         if cursor:
