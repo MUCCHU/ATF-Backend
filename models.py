@@ -88,7 +88,7 @@ class Items(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)    
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-@dataclass
+# @dataclass
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.id'))
