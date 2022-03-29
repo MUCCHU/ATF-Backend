@@ -57,6 +57,7 @@ def createorder(user):
     cursor.execute(
         "INSERT INTO orders (user_id, delivery_agent_name, time_for_preparation, time_to_reach, time_to_deliver, total_time, delivery_address, payment_mode, ordered_on) VALUES (?,?,?,?,?,?,?,?,?);",
         (user_id, names.get_full_name(gender='male'), time_for_preparation, time_to_reach, time_to_deliver, total_time, delivery_address, data["payment_mode"], NOW()) )
+    connection.commit()
     return {"message": "Order Created"}, 201
 
 
@@ -70,9 +71,11 @@ def getorder():
 def updateorder(id):
     data = request.get_json()
     cursor.execute("UPDATE orders SET status = ? WHERE order_id = ?", (data["status"], id,))
+    connection.commit()
     return {"message": "Order Updated"}, 200
 
 def deleteorder(id):
     # data = request.get_json()
     cursor.execute("DELETE FROM orders WHERE order_id = ?", (id,))
+    connection.commit()
     return {"message": "Order Deleted"}, 200
