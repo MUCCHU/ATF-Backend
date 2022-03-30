@@ -24,5 +24,7 @@ app.add_url_rule('/signup', methods=['POST'], view_func=signup)
 app.add_url_rule('/signin', methods=['POST'], view_func=login)
 app.add_url_rule('/check', methods=['POST'], view_func=check_session)
 app.add_url_rule('/logout', methods=['POST'], view_func=logout)
+app.add_url_rule('/restaurant/signup', methods=['POST'], view_func=signup_restaurant)
+app.add_url_rule('/restaurant/signin', methods=['POST'], view_func=login_restaurant)
 # app.add_url_rule('/queryusers', methods=['GET', 'POST'], view_func=queryusers)
 
