@@ -2,9 +2,22 @@ from math import prod
 from flask import Flask, request
 from connection import connection, cursor
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+app.config.update(
+    # DEBUG=True,
+    # SECRET_KEY="secret_sauce",
+    SESSION_COOKIE_HTTPONLY=True,
+    REMEMBER_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+)
+cors = CORS(
+    app,
+    resources={r"*": {"origins": "http://localhost:3000"}},
+    expose_headers=["Content-Type", "X-CSRFToken"],
+    supports_credentials=True,
+)
 
 @app.route("/")
 def handler():
